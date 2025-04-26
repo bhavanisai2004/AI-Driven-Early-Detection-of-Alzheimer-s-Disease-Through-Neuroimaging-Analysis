@@ -1,0 +1,304 @@
+&lt;!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alzheimer's Disease Detection - User Details</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        secondary: {
+                            DEFAULT: "hsl(var(--secondary))",
+                            foreground: "hsl(var(--secondary-foreground))",
+                        },
+                        destructive: {
+                            DEFAULT: "hsl(var(--destructive))",
+                            foreground: "hsl(var(--destructive-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(var(--accent))",
+                            foreground: "hsl(var(--accent-foreground))",
+                        },
+                        card: {
+                            DEFAULT: "hsl(var(--card))",
+                            foreground: "hsl(var(--card-foreground))",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        :root {
+            --background: 210 40% 98%;
+            --foreground: 222.2 84% 4.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 222.2 84% 4.9%;
+            --popover: 0 0% 100%;
+            --popover-foreground: 222.2 84% 4.9%;
+            --primary: 262 83.3% 57.8%;
+            --primary-foreground: 210 40% 98%;
+            --secondary: 210 40% 96.1%;
+            --secondary-foreground: 222.2 47.4% 11.2%;
+            --muted: 210 40% 96.1%;
+            --muted-foreground: 215.4 16.3% 46.9%;
+            --accent: 262 83.3% 57.8%;
+            --accent-foreground: 222.2 47.4% 11.2%;
+            --destructive: 0 84.2% 60.2%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 214.3 31.8% 91.4%;
+            --input: 214.3 31.8% 91.4%;
+            --ring: 262 83.3% 57.8%;
+            --radius: 0.5rem;
+        }
+
+        .dark {
+            --background: 222.2 84% 4.9%;
+            --foreground: 210 40% 98%;
+            --card: 222.2 84% 4.9%;
+            --card-foreground: 210 40% 98%;
+            --popover: 222.2 84% 4.9%;
+            --popover-foreground: 210 40% 98%;
+            --primary: 263.4 70% 50.4%;
+            --primary-foreground: 222.2 47.4% 11.2%;
+            --secondary: 217.2 32.6% 17.5%;
+            --secondary-foreground: 210 40% 98%;
+            --muted: 217.2 32.6% 17.5%;
+            --muted-foreground: 215 20.2% 65.1%;
+            --accent: 217.2 32.6% 17.5%;
+            --accent-foreground: 210 40% 98%;
+            --destructive: 0 62.8% 30.6%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 217.2 32.6% 17.5%;
+            --input: 217.2 32.6% 17.5%;
+            --ring: 263.4 70% 50.4%;
+        }
+
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #8b5cf6, #d946ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-background font-sans antialiased">
+    <header class="bg-card border-b border-border sticky top-0 z-10 shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="bg-purple-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold gradient-text">Admin Dashboard</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/admin" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>Back to Dashboard
+                    </a>
+                    <a href="/logout" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-foreground mb-2">User Details</h2>
+            <p class="text-muted-foreground">Viewing detailed information for {{ user.name }}</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 p-4 rounded-md {% if category == 'error' %}bg-destructive/10 text-destructive{% else %}bg-green-100 text-green-800{% endif %} flex items-center">
+                        <i class="{% if category == 'error' %}fas fa-exclamation-circle{% else %}fas fa-check-circle{% endif %} mr-2"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            &lt;!-- User Profile -->
+            <div class="md:col-span-1">
+                <div class="bg-card rounded-lg shadow-lg p-6 border border-border">
+                    <div class="user-avatar">
+                        {{ user.name[0] }}
+                    </div>
+                    <h3 class="text-xl font-bold text-foreground text-center mb-4">{{ user.name }}</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between">
+                            <span class="text-muted-foreground">Username:</span>
+                            <span class="font-medium">{{ user.username }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-muted-foreground">Gender:</span>
+                            <span class="font-medium">{{ user.gender }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-muted-foreground">Age:</span>
+                            <span class="font-medium">{{ user.age }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-muted-foreground">Joined:</span>
+                            <span class="font-medium">{{ user.created_at.strftime('%Y-%m-%d') }}</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-muted-foreground">Total Detections:</span>
+                            <span class="font-medium">{{ results|length }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <form action="/delete_user/{{ user.id }}" method="post" onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.');">
+                            <button type="submit" class="w-full py-2 px-4 bg-destructive text-destructive-foreground rounded-md hover:bg-destructive/90 transition-colors flex items-center justify-center">
+                                <i class="fas fa-trash-alt mr-2"></i> Delete User
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            &lt;!-- Detection History -->
+            <div class="md:col-span-2">
+                <div class="bg-card rounded-lg shadow-lg p-6 border border-border">
+                    <h3 class="text-xl font-bold text-foreground mb-4">
+                        <i class="fas fa-history mr-2 text-primary"></i>Detection History
+                    </h3>
+                    
+                    {% if results %}
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-muted">
+                                    <th class="border border-border px-4 py-2 text-left">Alzheimer's Stage</th>
+                                    <th class="border border-border px-4 py-2 text-left">Confidence</th>
+                                    <th class="border border-border px-4 py-2 text-left">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in results %}
+                                <tr>
+                                    <td class="border border-border px-4 py-2">
+                                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full 
+                                        {% if result.alzheimer_stage == 'NonDemented' %}bg-green-500
+                                        {% elif result.alzheimer_stage == 'VeryMildDemented' %}bg-yellow-500
+                                        {% elif result.alzheimer_stage == 'MildDemented' %}bg-orange-500
+                                        {% elif result.alzheimer_stage == 'ModerateDemented' %}bg-red-500
+                                        {% endif %} text-white font-bold">
+                                            {% if result.alzheimer_stage == 'NonDemented' %}N
+                                            {% elif result.alzheimer_stage == 'VeryMildDemented' %}VM
+                                            {% elif result.alzheimer_stage == 'MildDemented' %}M
+                                            {% elif result.alzheimer_stage == 'ModerateDemented' %}MD
+                                            {% endif %}
+                                        </span>
+                                        {{ result.alzheimer_stage }}
+                                    </td>
+                                    <td class="border border-border px-4 py-2">{{ "%.2f"|format(result.confidence * 100) }}%</td>
+                                    <td class="border border-border px-4 py-2">{{ result.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-6">
+                        <div class="bg-muted p-4 rounded-md">
+                            <h4 class="font-semibold text-foreground mb-2">Alzheimer's Stage Distribution</h4>
+                            <div class="space-y-3">
+                                {% set stages = {} %}
+                                {% for result in results %}
+                                    {% if result.alzheimer_stage in stages %}
+                                        {% set _ = stages.update({result.alzheimer_stage: stages[result.alzheimer_stage] + 1}) %}
+                                    {% else %}
+                                        {% set _ = stages.update({result.alzheimer_stage: 1}) %}
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% for stage, count in stages.items() %}
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-foreground">{{ stage }}</span>
+                                        <span class="text-muted-foreground">{{ count }} detections</span>
+                                    </div>
+                                    <div class="w-full bg-background rounded-full h-2.5">
+                                        <div class="bg-primary h-2.5 rounded-full" style="width: {{ (count / results|length) * 100 }}%"></div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-8">
+                        <div class="text-5xl text-muted-foreground mb-4">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <p class="text-muted-foreground">This user hasn't performed any Alzheimer's disease detection yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-card border-t border-border mt-8">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <div class="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <span class="text-foreground font-medium">Alzheimer's Disease Detection System</span>
+                </div>
+                <div class="text-center md:text-right text-sm text-muted-foreground">
+                    <p>© 2025 Alzheimer's Disease Detection System. All rights reserved.</p>
+                    <p class="mt-1">Admin Panel</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
