@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alzheimer's Disease Detection - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        secondary: {
+                            DEFAULT: "hsl(var(--secondary))",
+                            foreground: "hsl(var(--secondary-foreground))",
+                        },
+                        destructive: {
+                            DEFAULT: "hsl(var(--destructive))",
+                            foreground: "hsl(var(--destructive-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(var(--accent))",
+                            foreground: "hsl(var(--accent-foreground))",
+                        },
+                        card: {
+                            DEFAULT: "hsl(var(--card))",
+                            foreground: "hsl(var(--card-foreground))",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        :root {
+            --background: 210 40% 98%;
+            --foreground: 222.2 84% 4.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 222.2 84% 4.9%;
+            --popover: 0 0% 100%;
+            --popover-foreground: 222.2 84% 4.9%;
+            --primary: 262 83.3% 57.8%;
+            --primary-foreground: 210 40% 98%;
+            --secondary: 210 40% 96.1%;
+            --secondary-foreground: 222.2 47.4% 11.2%;
+            --muted: 210 40% 96.1%;
+            --muted-foreground: 215.4 16.3% 46.9%;
+            --accent: 262 83.3% 57.8%;
+            --accent-foreground: 222.2 47.4% 11.2%;
+            --destructive: 0 84.2% 60.2%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 214.3 31.8% 91.4%;
+            --input: 214.3 31.8% 91.4%;
+            --ring: 262 83.3% 57.8%;
+            --radius: 0.5rem;
+        }
+
+        .dark {
+            --background: 222.2 84% 4.9%;
+            --foreground: 210 40% 98%;
+            --card: 222.2 84% 4.9%;
+            --card-foreground: 210 40% 98%;
+            --popover: 222.2 84% 4.9%;
+            --popover-foreground: 210 40% 98%;
+            --primary: 263.4 70% 50.4%;
+            --primary-foreground: 222.2 47.4% 11.2%;
+            --secondary: 217.2 32.6% 17.5%;
+            --secondary-foreground: 210 40% 98%;
+            --muted: 217.2 32.6% 17.5%;
+            --muted-foreground: 215 20.2% 65.1%;
+            --accent: 217.2 32.6% 17.5%;
+            --accent-foreground: 210 40% 98%;
+            --destructive: 0 62.8% 30.6%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 217.2 32.6% 17.5%;
+            --input: 217.2 32.6% 17.5%;
+            --ring: 263.4 70% 50.4%;
+        }
+
+        .alzheimer-stage {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin: 0 auto 1rem auto;
+            text-align: center;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .alzheimer-stage:hover {
+            transform: scale(1.05);
+        }
+
+        .stage-non {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .stage-very-mild {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .stage-mild {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+        }
+
+        .stage-moderate {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .feature-card {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .feature-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #d946ef);
+            color: white;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.2), 0 2px 4px -1px rgba(139, 92, 246, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #8b5cf6, #d946ef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .animated-gradient-btn {
+            background-size: 200% 200%;
+            background-image: linear-gradient(45deg, #8b5cf6, #d946ef, #8b5cf6);
+            animation: gradient 5s ease infinite;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .neuron {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background-color: rgba(139, 92, 246, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.2;
+            }
+            50% {
+                transform: translateY(-20px) translateX(10px);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.2;
+            }
+        }
+
+        .neuron:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; }
+        .neuron:nth-child(2) { left: 20%; top: 40%; animation-delay: 2s; }
+        .neuron:nth-child(3) { left: 30%; top: 60%; animation-delay: 4s; }
+        .neuron:nth-child(4) { left: 40%; top: 30%; animation-delay: 6s; }
+        .neuron:nth-child(5) { left: 50%; top: 70%; animation-delay: 8s; }
+        .neuron:nth-child(6) { left: 60%; top: 40%; animation-delay: 10s; }
+        .neuron:nth-child(7) { left: 70%; top: 20%; animation-delay: 12s; }
+        .neuron:nth-child(8) { left: 80%; top: 50%; animation-delay: 14s; }
+    </style>
+</head>
+<body class="min-h-screen bg-background font-sans antialiased relative">
+    <!-- Animated neurons background -->
+    <div class="neuron"></div>
+    <div class="neuron"></div>
+    <div class="neuron"></div>
+    <div class="neuron"></div>
+    <div class="neuron"></div>
+    <div class="neuron"></div>
+    <div class="neuron"></div>
+    <div class="neuron"></div>
+
+    <header class="bg-card border-b border-border sticky top-0 z-10 shadow-sm">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="bg-purple-600 text-white rounded-full w-10 h-10 flex items-center justify-center mr-3">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h1 class="text-2xl font-bold gradient-text">Alzheimer's Detection</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-foreground hidden md:inline-block">
+                        <i class="fas fa-user-circle mr-2"></i>Welcome, {{ name }}
+                    </span>
+                    <a href="/detect" class="px-4 py-2 animated-gradient-btn text-white rounded-md transition-all duration-300 shadow-md hover:shadow-lg">
+                        <i class="fas fa-brain mr-2"></i>Detect
+                    </a>
+                    <a href="/logout" class="px-4 py-2 bg-secondary text-secondary-foreground rounded-md hover:bg-secondary/80 transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="mb-4 p-4 rounded-md {% if category == 'error' %}bg-destructive/10 text-destructive{% else %}bg-green-100 text-green-800{% endif %} flex items-center">
+                        <i class="{% if category == 'error' %}fas fa-exclamation-circle{% else %}fas fa-check-circle{% endif %} mr-2"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="mb-8 text-center">
+            <h2 class="text-4xl font-bold gradient-text mb-4">Welcome to Your Dashboard</h2>
+            <p class="text-muted-foreground text-lg max-w-3xl mx-auto">Monitor Alzheimer's disease progression through our advanced MRI analysis technology powered by deep learning.</p>
+        </div>
+
+        <!-- Features Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div class="bg-card rounded-lg shadow-xl p-6 feature-card border border-border">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-purple-100 rounded-full filter blur-3xl opacity-20 -mr-20 -mt-20"></div>
+                <div class="feature-icon">
+                    <i class="fas fa-brain text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-foreground mb-2">AI-Powered Analysis</h3>
+                <p class="text-muted-foreground">
+                    Our deep learning model analyzes brain MRI scans to detect early signs of Alzheimer's disease with high accuracy.
+                </p>
+            </div>
+            
+            <div class="bg-card rounded-lg shadow-xl p-6 feature-card border border-border">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-purple-100 rounded-full filter blur-3xl opacity-20 -mr-20 -mt-20"></div>
+                <div class="feature-icon">
+                    <i class="fas fa-bolt text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-foreground mb-2">Instant Results</h3>
+                <p class="text-muted-foreground">
+                    Get your analysis results in seconds, with detailed classification of Alzheimer's stage and confidence score.
+                </p>
+            </div>
+            
+            <div class="bg-card rounded-lg shadow-xl p-6 feature-card border border-border">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-purple-100 rounded-full filter blur-3xl opacity-20 -mr-20 -mt-20"></div>
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-foreground mb-2">Secure & Private</h3>
+                <p class="text-muted-foreground">
+                    Your data is secure and private. We don't store your MRI images, only the detection results for tracking.
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Alzheimer's Information -->
+            <div class="bg-card rounded-lg shadow-xl p-6 border border-border relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-purple-100 rounded-full filter blur-3xl opacity-20 -mr-20 -mt-20"></div>
+                
+                <h2 class="text-2xl font-bold gradient-text mb-6 flex items-center">
+                    <i class="fas fa-info-circle mr-3 text-purple-500"></i>Alzheimer's Disease Stages
+                </h2>
+                <p class="text-muted-foreground mb-6">
+                    Alzheimer's disease progresses through several stages, each with distinct symptoms and characteristics.
+                </p>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                    <div class="text-center">
+                        <div class="alzheimer-stage stage-non">Non Demented</div>
+                        <p class="text-sm text-muted-foreground">Normal cognitive function</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="alzheimer-stage stage-very-mild">Very Mild</div>
+                        <p class="text-sm text-muted-foreground">Subtle memory changes</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="alzheimer-stage stage-mild">Mild Demented</div>
+                        <p class="text-sm text-muted-foreground">Noticeable memory issues</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="alzheimer-stage stage-moderate">Moderate</div>
+                        <p class="text-sm text-muted-foreground">Significant cognitive decline</p>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <a href="/detect" class="inline-flex items-center justify-center px-6 py-3 animated-gradient-btn text-white rounded-md transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] font-semibold">
+                        <i class="fas fa-brain mr-2"></i> Start Detection
+                    </a>
+                </div>
+            </div>
+
+            <!-- Your Results -->
+            <div class="bg-card rounded-lg shadow-xl p-6 border border-border relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-40 h-40 bg-purple-100 rounded-full filter blur-3xl opacity-20 -mr-20 -mt-20"></div>
+                
+                <h2 class="text-2xl font-bold gradient-text mb-6 flex items-center">
+                    <i class="fas fa-history mr-3 text-purple-500"></i>Your Detection History
+                </h2>
+                
+                {% if results %}
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-muted">
+                                <th class="border border-border px-4 py-3 text-left">Stage</th>
+                                <th class="border border-border px-4 py-3 text-left">Confidence</th>
+                                <th class="border border-border px-4 py-3 text-left">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                            <tr class="hover:bg-muted/50 transition-colors">
+                                <td class="border border-border px-4 py-3">
+                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full 
+                                    {% if result.alzheimer_stage == 'NonDemented' %}bg-green-500
+                                    {% elif result.alzheimer_stage == 'VeryMildDemented' %}bg-yellow-500
+                                    {% elif result.alzheimer_stage == 'MildDemented' %}bg-orange-500
+                                    {% elif result.alzheimer_stage == 'ModerateDemented' %}bg-red-500
+                                    {% endif %} text-white font-bold mr-2">
+                                        {% if result.alzheimer_stage == 'NonDemented' %}N
+                                        {% elif result.alzheimer_stage == 'VeryMildDemented' %}VM
+                                        {% elif result.alzheimer_stage == 'MildDemented' %}M
+                                        {% elif result.alzheimer_stage == 'ModerateDemented' %}MD
+                                        {% endif %}
+                                    </span>
+                                    {{ result.alzheimer_stage }}
+                                </td>
+                                <td class="border border-border px-4 py-3">{{ "%.2f"|format(result.confidence * 100) }}%</td>
+                                <td class="border border-border px-4 py-3">{{ result.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-8">
+                    <div class="text-7xl text-purple-300 mb-6">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <p class="text-muted-foreground mb-6">You haven't performed any Alzheimer's disease detection yet.</p>
+                    <a href="/detect" class="inline-flex items-center justify-center px-6 py-3 animated-gradient-btn text-white rounded-md transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] font-semibold">
+                        <i class="fas fa-brain mr-2"></i> Start Your First Detection
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Alzheimer's Information -->
+        <div class="mt-8 bg-card rounded-lg shadow-xl p-6 border border-border relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-40 h-40 bg-purple-100 rounded-full filter blur-3xl opacity-20 -mr-20 -mt-20"></div>
+            
+            <h2 class="text-2xl font-bold gradient-text mb-6 flex items-center">
+                <i class="fas fa-book-medical mr-3 text-purple-500"></i>Understanding Alzheimer's Disease
+            </h2>
+            <p class="text-muted-foreground mb-4">
+                Alzheimer's disease is a progressive neurological disorder that causes brain cells to degenerate and die. It's the most common cause of dementia — a continuous decline in thinking, behavioral and social skills that affects a person's ability to function independently.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+                <div class="bg-muted p-4 rounded-md hover:shadow-md transition-all duration-300">
+                    <h3 class="font-semibold text-foreground mb-2">Early Signs & Symptoms</h3>
+                    <ul class="list-disc pl-5 text-muted-foreground space-y-1">
+                        <li>Memory loss that disrupts daily life</li>
+                        <li>Challenges in planning or solving problems</li>
+                        <li>Difficulty completing familiar tasks</li>
+                        <li>Confusion with time or place</li>
+                        <li>Trouble understanding visual images</li>
+                        <li>New problems with words in speaking or writing</li>
+                    </ul>
+                </div>
+                <div class="bg-muted p-4 rounded-md hover:shadow-md transition-all duration-300">
+                    <h3 class="font-semibold text-foreground mb-2">Risk Factors</h3>
+                    <ul class="list-disc pl-5 text-muted-foreground space-y-1">
+                        <li>Age (primarily affects people over 65)</li>
+                        <li>Family history and genetics</li>
+                        <li>Down syndrome</li>
+                        <li>Head injuries</li>
+                        <li>Poor sleep patterns</li>
+                        <li>Lifestyle and heart health</li>
+                        <li>Lack of exercise and social engagement</li>
+                    </ul>
+                </div>
+                <div class="bg-muted p-4 rounded-md hover:shadow-md transition-all duration-300">
+                    <h3 class="font-semibold text-foreground mb-2">Prevention Strategies</h3>
+                    <ul class="list-disc pl-5 text-muted-foreground space-y-1">
+                        <li>Regular physical exercise</li>
+                        <li>Healthy diet (Mediterranean diet)</li>
+                        <li>Mental and social stimulation</li>
+                        <li>Quality sleep</li>
+                        <li>Stress management</li>
+                        <li>Management of cardiovascular risk factors</li>
+                        <li>Lifelong learning and cognitive training</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-card border-t border-border mt-8">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <div class="bg-purple-600 text-white rounded-full w-8 h-8 flex items-center justify-center mr-2">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <span class="text-foreground font-medium">Alzheimer's Disease Detection System</span>
+                </div>
+                <div class="text-center md:text-right text-sm text-muted-foreground">
+                    <p>© 2025 Alzheimer's Disease Detection System. All rights reserved.</p>
+                    <p class="mt-1">Powered by Team</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
